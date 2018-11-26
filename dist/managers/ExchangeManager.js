@@ -13,6 +13,13 @@ var ExchangeManager = /** @class */ (function () {
             callback(exchanges);
         });
     };
+    ExchangeManager.prototype.updateOne = function (exchange, callback) {
+        console.log(exchange);
+        ExchangeModel_1.default.findOneAndUpdate({ _id: exchange.id }, { $set: { status: exchange.status } }, { new: true }, function (err, result) {
+            if (err)
+                throw err;
+        });
+    };
     return ExchangeManager;
 }());
 exports.ExchangeManager = ExchangeManager;

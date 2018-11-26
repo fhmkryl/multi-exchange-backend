@@ -10,4 +10,13 @@ export class ExchangeManager {
                 callback(exchanges);
             });
     }
+
+    updateOne(exchange : any, callback: any){
+        console.log(exchange);
+        ExchangeModel.findOneAndUpdate({ _id: exchange.id },
+            { $set: {  status: exchange.status } }, { new: true },
+            function (err: any, result: any) {
+                if (err) throw err;
+            });
+    }
 }
