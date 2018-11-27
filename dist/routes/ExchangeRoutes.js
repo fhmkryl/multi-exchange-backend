@@ -5,6 +5,7 @@ var ExchangeManager_1 = require("../managers/ExchangeManager");
 var express = require('express');
 var ExchangeRoutes = express.Router();
 var controller = new ExchangeController_1.ExchangeController();
+var manager = new ExchangeManager_1.ExchangeManager();
 ExchangeRoutes.get('/list', function (req, res) {
     controller.list(req, res);
 });
@@ -26,16 +27,19 @@ ExchangeRoutes.get('/delete/:id', function (req, res) {
 ExchangeRoutes.post('/delete/:id', function (req, res) {
     controller.deletePost(req, res);
 });
-ExchangeRoutes.get('/run/:id', function (req, res) {
-    var manager = new ExchangeManager_1.ExchangeManager();
-    manager.updateOne({
-        _id: req.params.id,
-        status: 'Running'
-    }, function (result) {
+ExchangeRoutes.get('/start/:id', function (req, res) {
+    manager.update({ _id: req.params.id, status: 'Running' }, function (result) {
+        manager.getAll(function (exchanges) {
+            res.render('../views/exchange/listTemplate', { exchanges: exchanges });
+        });
     });
 });
 ExchangeRoutes.get('/stop/:id', function (req, res) {
-    res.send('OK');
+    manager.update({ _id: req.params.id, status: 'Stopped' }, function (result) {
+        manager.getAll(function (exchanges) {
+            res.render('../views/exchange/listTemplate', { exchanges: exchanges });
+        });
+    });
 });
 exports.default = ExchangeRoutes;
-//# sourceMappingURL=exchangeRoutes.js.map
+//# sourceMappingURL=ExchangeRoutes.js.map

@@ -1,5 +1,5 @@
-import ExchangeRoutes from "./routes/exchangeRoutes";
-import IndexRoutes from "./routes/exchangeRoutes";
+import ExchangeRoutes from "./routes/ExchangeRoutes";
+import IndexRoutes from "./routes/IndexRoutes";
 
 var express = require('express');
 var path = require('path');

@@ -11,12 +11,15 @@
   "author": "fhmkryl",
   "license": "MIT",
   "dependencies": {
+    "binance": "^1.3.3",
     "body-parser": "^1.18.3",
     "cookie-parser": "^1.4.3",
+    "crypto-socket": "^4.0.0",
     "ejs": "^2.6.1",
     "express": "^4.16.4",
     "mongodb": "^3.1.10",
     "mongoose": "^5.3.13",
+    "node-binance-api": "^0.8.7",
     "socket.io": "^2.1.1"
   },
   "devDependencies": {

@@ -1,19 +1,29 @@
-function runExchange(id){
+/* show spinner */
+$(document)
+    .ajaxStart(function () {
+        $('#loader').show();
+    });
+/* hide spinner */
+$(document).ajaxStop(function () {
+    $('#loader').hide();
+});
+
+function startExchange(id) {
     $.ajax({
         type: 'GET',
-        url: '/exchange/run/'+id,
-        success: function(result) {
-             alert(result);
+        url: '/exchange/start/' + id,
+        success: function (result) {
+            $('#result').html(result);
         }
-      });
+    });
 }
 
-function stopExchange(id){
+function stopExchange(id) {
     $.ajax({
         type: 'GET',
-        url: '/exchange/run/'+id,
-        success: function(result) {
-            alert(result);
+        url: '/exchange/stop/' + id,
+        success: function (result) {
+            $('#result').html(result);
         }
-      });
+    });
 }

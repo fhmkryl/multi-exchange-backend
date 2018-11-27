@@ -1,0 +1,33 @@
+<% if(exchanges.length>0) { %>
+    <table class="table table-hover" style="width: 80%;">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Server time</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <% for(var i=0; i<exchanges.length;i++) { %>
+          <% var exchange = exchanges[i]; %>
+          <tr>
+            <td><%= exchange.name%></td>
+            <td><%= exchange.serverTime%></td>
+            <td><%= exchange.status%></td>
+            <th>
+              <% if(exchange.status === 'Stopped'){ %>
+                <a href="#" class="btn btn-primary" onclick="startExchange('<%=exchange._id%>');">Start</a> 
+                <% } else{ %>  
+                  <a href="#" class="btn btn-primary" onclick="stopExchange('<%=exchange._id%>');">Stop</a> 
+              <% } %>
+            </th>
+            <td><a href="/exchange/update/<%= exchange._id%>" class="btn btn-success">Update</a></td>
+            <td><a href="/exchange/delete/<%= exchange._id%>" class="btn btn-danger">Delete</a></td>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
+    <% } else { %>
+      <div>No exchanges found.</div>
+    <% } %>

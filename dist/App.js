@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var exchangeRoutes_1 = require("./routes/exchangeRoutes");
-var exchangeRoutes_2 = require("./routes/exchangeRoutes");
+var ExchangeRoutes_1 = require("./routes/ExchangeRoutes");
+var IndexRoutes_1 = require("./routes/IndexRoutes");
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
@@ -22,8 +22,8 @@ App.use(bodyParser.urlencoded({ extended: false }));
 App.use(cookieParser());
 App.use(express.static(__dirname));
 console.log('Static file path', __dirname);
-App.use('/', exchangeRoutes_2.default);
-App.use('/exchange', exchangeRoutes_1.default);
+App.use('/', IndexRoutes_1.default);
+App.use('/exchange', ExchangeRoutes_1.default);
 // catch 404 and forward to error handler
 // App.use(function (req : any, res : any, next : any) {
 //   var err = new Error('Not Found');

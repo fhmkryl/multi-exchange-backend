@@ -2,6 +2,7 @@
 
 import App from "./App";
 import { ExchangeManager } from "./managers/ExchangeManager";
+import Binance from "./exchange-api/Binance";
 
 /**
  * Module dependencies.
@@ -38,17 +39,35 @@ io
   .on('connection', function (socket : any) {
     console.log('A client is connected!');
 
+    Binance.initMarkets();
+    Binance.onReceivedTickers((tickers: any) => {
+      socket.emit('onTickersReceived', {tickerList: tickers});
+    });
+    
     setInterval(function () {
       let manager = new ExchangeManager();
       manager.getAll((exchanges : any) => {
-        socket.emit('onExchangesReceived', {exchangeList: exchanges});
+        socket.emit('onExchangesReceived', {exchangeList: simulateExchanges(exchanges)});
       });
-    }, 1000);
+    }, 2000);
 
     socket.on('disconnect', () => {
-      console.log('user disconnected')
+      console.log('user disconnected');
     })
   });
+
+  function simulateExchanges(exchanges: any) : any{
+    let updatedExchanges : any = [];
+    exchanges.map((exchange: any, index: any, arr: any) => {
+      if(exchange.status === 'Running'){
+        exchange.serverTime = new Date();
+      }
+
+      updatedExchanges.push(exchange);
+    });
+
+    return updatedExchanges;
+  }
 
 
 /**

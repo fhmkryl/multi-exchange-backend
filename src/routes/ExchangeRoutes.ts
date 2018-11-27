@@ -4,6 +4,8 @@ import { ExchangeManager } from "../managers/ExchangeManager";
 var express = require('express');
 var ExchangeRoutes = express.Router();
 var controller = new ExchangeController();
+const manager = new ExchangeManager();
+
 
 ExchangeRoutes.get('/list', function (req : any, res : any) {
   controller.list(req, res);
@@ -33,18 +35,20 @@ ExchangeRoutes.post('/delete/:id', function (req : any, res : any) {
   controller.deletePost(req, res);
 });
 
-ExchangeRoutes.get('/run/:id', function(req: any, res: any){
-  let manager = new ExchangeManager();
-  manager.updateOne({
-    _id : req.params.id,
-    status : 'Running'
-  }, function(result: any){
-    
+ExchangeRoutes.get('/start/:id', function(req: any, res: any){
+  manager.update({_id: req.params.id, status : 'Running'}, (result : any) => {
+    manager.getAll((exchanges : any) => {
+      res.render('../views/exchange/listTemplate', {exchanges: exchanges});
+    });
   });
 });
 
 ExchangeRoutes.get('/stop/:id', function(req: any, res: any){
-  res.send('OK');
+  manager.update({_id: req.params.id, status : 'Stopped'}, (result : any) => {
+    manager.getAll((exchanges : any) => {
+      res.render('../views/exchange/listTemplate', {exchanges: exchanges});
+    });
+  });
 });
 
 export default ExchangeRoutes;

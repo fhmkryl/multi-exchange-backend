@@ -13,11 +13,33 @@ var ExchangeManager = /** @class */ (function () {
             callback(exchanges);
         });
     };
-    ExchangeManager.prototype.updateOne = function (exchange, callback) {
-        console.log(exchange);
-        ExchangeModel_1.default.findOneAndUpdate({ _id: exchange.id }, { $set: { status: exchange.status } }, { new: true }, function (err, result) {
+    ExchangeManager.prototype.create = function (exchange, callback) {
+        var newExchange = new ExchangeModel_1.default();
+        newExchange.name = exchange.name;
+        newExchange.serverTime = exchange.serverTime;
+        newExchange.status = exchange.status;
+        newExchange.save(function (err) {
             if (err)
                 throw err;
+            callback();
+        });
+    };
+    ExchangeManager.prototype.update = function (exchange, callback) {
+        ExchangeModel_1.default.findById(exchange._id, function (err, existingExchange) {
+            if (err)
+                throw err;
+            if (exchange.name)
+                existingExchange.name = exchange.name;
+            if (exchange.serverTime)
+                existingExchange.serverTime = exchange.serverTime;
+            if (exchange.status)
+                existingExchange.status = exchange.status;
+            // save the bear
+            existingExchange.save(function (err) {
+                if (err)
+                    throw err;
+                callback(existingExchange);
+            });
         });
     };
     return ExchangeManager;

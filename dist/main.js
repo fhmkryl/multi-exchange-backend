@@ -3,6 +3,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var App_1 = require("./App");
 var ExchangeManager_1 = require("./managers/ExchangeManager");
+var Binance_1 = require("./exchange-api/Binance");
 /**
  * Module dependencies.
  */
@@ -29,16 +30,30 @@ io
     .sockets
     .on('connection', function (socket) {
     console.log('A client is connected!');
+    Binance_1.default.initMarkets();
+    Binance_1.default.onReceivedTickers(function (tickers) {
+        socket.emit('onTickersReceived', { tickerList: tickers });
+    });
     setInterval(function () {
         var manager = new ExchangeManager_1.ExchangeManager();
         manager.getAll(function (exchanges) {
-            socket.emit('onExchangesReceived', { exchangeList: exchanges });
+            socket.emit('onExchangesReceived', { exchangeList: simulateExchanges(exchanges) });
         });
-    }, 1000);
+    }, 2000);
     socket.on('disconnect', function () {
         console.log('user disconnected');
     });
 });
+function simulateExchanges(exchanges) {
+    var updatedExchanges = [];
+    exchanges.map(function (exchange, index, arr) {
+        if (exchange.status === 'Running') {
+            exchange.serverTime = new Date();
+        }
+        updatedExchanges.push(exchange);
+    });
+    return updatedExchanges;
+}
 /**
  * Normalize a port into a number, string, or false.
  */
