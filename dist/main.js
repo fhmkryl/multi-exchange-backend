@@ -31,8 +31,12 @@ io
     .on('connection', function (socket) {
     console.log('A client is connected!');
     Binance_1.default.initMarkets();
-    Binance_1.default.onReceivedTickers(function (tickers) {
-        socket.emit('onTickersReceived', { tickerList: tickers });
+    var tickers = [];
+    Binance_1.default.onReceivedTickers(function (ticker) {
+        var pChanged = priceChanged(tickers, ticker);
+        if (pChanged) {
+            socket.emit('onTickersReceived', { ticker: ticker });
+        }
     });
     setInterval(function () {
         var manager = new ExchangeManager_1.ExchangeManager();
@@ -44,6 +48,19 @@ io
         console.log('user disconnected');
     });
 });
+function priceChanged(tickers, newTicker) {
+    var existingTicker = tickers.filter(function (item) { return item.symbol === newTicker.symbol; })[0];
+    if (existingTicker) {
+        if (existingTicker.price !== newTicker.price) {
+            console.log(existingTicker.symbol, existingTicker.price, newTicker.price);
+            existingTicker.price = newTicker.price;
+            return true;
+        }
+        return false;
+    }
+    tickers.push(newTicker);
+    return true;
+}
 function simulateExchanges(exchanges) {
     var updatedExchanges = [];
     exchanges.map(function (exchange, index, arr) {

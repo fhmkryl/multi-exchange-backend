@@ -3,6 +3,7 @@
 import App from "./App";
 import { ExchangeManager } from "./managers/ExchangeManager";
 import Binance from "./exchange-api/Binance";
+import TickerModel from "./models/TickerModel";
 
 /**
  * Module dependencies.
@@ -40,10 +41,14 @@ io
     console.log('A client is connected!');
 
     Binance.initMarkets();
-    Binance.onReceivedTickers((tickers: any) => {
-      socket.emit('onTickersReceived', {tickerList: tickers});
+    let tickers: TickerModel[] = [];
+    Binance.onReceivedTickers((ticker: any) => {
+      let pChanged = priceChanged(tickers, ticker);
+      if(pChanged){
+        socket.emit('onTickersReceived', {ticker: ticker});
+      }
     });
-    
+
     setInterval(function () {
       let manager = new ExchangeManager();
       manager.getAll((exchanges : any) => {
@@ -55,6 +60,21 @@ io
       console.log('user disconnected');
     })
   });
+
+  function priceChanged(tickers: TickerModel[], newTicker: any){
+    let existingTicker = tickers.filter((item: any) => item.symbol === newTicker.symbol)[0];
+    if(existingTicker){
+      if(existingTicker.price !== newTicker.price){
+        console.log(existingTicker.symbol ,existingTicker.price, newTicker.price);
+        existingTicker.price = newTicker.price;
+        return true;
+      }
+      return false;
+    }
+
+    tickers.push(newTicker);
+    return true;
+  }
 
   function simulateExchanges(exchanges: any) : any{
     let updatedExchanges : any = [];
