@@ -31,12 +31,8 @@ io
     .on('connection', function (socket) {
     console.log('A client is connected!');
     Binance_1.default.initMarkets();
-    var tickers = [];
-    Binance_1.default.onReceivedTickers(function (ticker) {
-        var pChanged = priceChanged(tickers, ticker);
-        if (pChanged) {
-            socket.emit('onTickersReceived', { ticker: ticker });
-        }
+    Binance_1.default.onReceivedTicker(function (tickerList) {
+        socket.emit('onTickersReceived', { tickerList: tickerList });
     });
     setInterval(function () {
         var manager = new ExchangeManager_1.ExchangeManager();

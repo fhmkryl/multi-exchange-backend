@@ -21,11 +21,30 @@ Binance.initMarkets = function () {
         }
     });
 };
-Binance.onReceivedTickers = function (callback) {
+var tickerList = [];
+Binance.onReceivedTicker = function (callback) {
     Binance.websockets.trades(markets, function (trades) {
         var eventType = trades.e, eventTime = trades.E, symbol = trades.s, price = trades.p, quantity = trades.q, maker = trades.m, tradeId = trades.a;
-        var ticker = new TickerModel_1.default('Binance', symbol, price, eventTime);
-        callback(ticker);
+        var newTicker = new TickerModel_1.default('Binance', symbol, price, eventTime);
+        updateTickerList(newTicker);
+        callback(tickerList);
+    });
+};
+var updateTickerList = function (newTick) {
+    if (tickerList.length === 0) {
+        tickerList.push(newTick);
+        return;
+    }
+    var existingTicker = tickerList.filter(function (item) { return item.symbol === newTick.symbol; });
+    if (existingTicker.length === 0) {
+        tickerList.push(newTick);
+        return;
+    }
+    tickerList.forEach(function (item) {
+        if (item.symbol === newTick.symbol) {
+            item.price = newTick.price;
+            return item;
+        }
     });
 };
 exports.default = Binance;

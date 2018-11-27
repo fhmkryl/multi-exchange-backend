@@ -41,12 +41,8 @@ io
     console.log('A client is connected!');
 
     Binance.initMarkets();
-    let tickers: TickerModel[] = [];
-    Binance.onReceivedTickers((ticker: any) => {
-      let pChanged = priceChanged(tickers, ticker);
-      if(pChanged){
-        socket.emit('onTickersReceived', {ticker: ticker});
-      }
+    Binance.onReceivedTicker((tickerList: any) => {
+      socket.emit('onTickersReceived', {tickerList: tickerList});
     });
 
     setInterval(function () {

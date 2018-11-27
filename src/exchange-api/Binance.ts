@@ -22,13 +22,39 @@ Binance.initMarkets = () => {
     });
 }
 
-Binance.onReceivedTickers = (callback: any) => {
+let tickerList: TickerModel [] = [];
+Binance.onReceivedTicker = (callback: any) => {
     Binance.websockets.trades(markets, (trades: any) => {
         let { e: eventType, E: eventTime, s: symbol, p: price, q: quantity, m: maker, a: tradeId } = trades;
-        let ticker = new TickerModel('Binance', symbol, price, eventTime);
+        let newTicker = new TickerModel('Binance', symbol, price, eventTime);
+        
+        updateTickerList(newTicker);
 
-        callback(ticker);
+        callback(tickerList);
     });
 }
+
+const updateTickerList = (newTick : TickerModel) =>{
+    if(tickerList.length === 0){
+        tickerList.push(newTick);
+        return;
+    }
+
+    let existingTicker = tickerList.filter((item) => item.symbol === newTick.symbol);
+    if( existingTicker.length === 0){
+        tickerList.push(newTick);
+        return;
+    }
+
+    tickerList.forEach((item) => {
+        if(item.symbol === newTick.symbol){
+            item.price = newTick.price;
+            return item;
+        }
+    });
+}
+
+
+
 
 export default Binance;
