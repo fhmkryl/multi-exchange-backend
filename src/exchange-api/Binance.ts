@@ -7,6 +7,8 @@ const Binance = require('node-binance-api')().options({
 });
 
 let markets: any = [];
+let tickerList: TickerModel [] = [];
+
 Binance.initMarkets = () => {
     markets = [];
     Binance.prevDay(false, (error: any, prevDay: any) => {
@@ -20,17 +22,14 @@ Binance.initMarkets = () => {
             markets.push(symbol);
         }
     });
-}
 
-let tickerList: TickerModel [] = [];
-Binance.onReceivedTicker = (callback: any) => {
     Binance.websockets.trades(markets, (trades: any) => {
         let { e: eventType, E: eventTime, s: symbol, p: price, q: quantity, m: maker, a: tradeId } = trades;
         let newTicker = new TickerModel('Binance', symbol, price, eventTime);
         
         updateTickerList(newTicker);
 
-        callback(tickerList);
+        Binance.tickerList = tickerList;
     });
 }
 
@@ -48,7 +47,17 @@ const updateTickerList = (newTick : TickerModel) =>{
 
     tickerList.forEach((item) => {
         if(item.symbol === newTick.symbol){
+            if(newTick.price > item.price){
+                item.direction = 'Up';
+            }
+            else if(newTick.price < item.price){
+                item.direction = 'Down';
+            }
+            else{
+                item.direction = 'Same';
+            }
             item.price = newTick.price;
+            item.lastUpdateTime = newTick.lastUpdateTime;
             return item;
         }
     });

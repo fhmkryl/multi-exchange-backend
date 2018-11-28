@@ -34,16 +34,13 @@ server.on('listening', onListening);
 // Loading socket.io
 var io = require('socket.io').listen(server);
 
+Binance.initMarkets();
+
 // When a client connects, we note it in the console
 io
   .sockets
   .on('connection', function (socket : any) {
     console.log('A client is connected!');
-
-    Binance.initMarkets();
-    Binance.onReceivedTicker((tickerList: any) => {
-      socket.emit('onTickersReceived', {tickerList: tickerList});
-    });
 
     setInterval(function () {
       let manager = new ExchangeManager();
@@ -51,6 +48,10 @@ io
         socket.emit('onExchangesReceived', {exchangeList: simulateExchanges(exchanges)});
       });
     }, 2000);
+
+    setInterval(function () {
+      socket.emit('onTickersReceived', {tickerList: Binance.tickerList});
+    }, 1000);
 
     socket.on('disconnect', () => {
       console.log('user disconnected');

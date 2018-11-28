@@ -1,14 +1,16 @@
 class TickerModel {
-    exchangeName : string;
-    symbol : string;
+    exchangeName: string;
+    symbol: string;
     price: number;
-    lastUpdateTime : string;
+    lastUpdateTime: string;
+    direction: string;
 
-    constructor(exchangeName: string, symbol: string, price : number, lastUpdateTime: string){
+    constructor(exchangeName: string, symbol: string, price: number, lastUpdateTime: string, direction: string = 'Same') {
         this.exchangeName = exchangeName;
         this.symbol = symbol;
         this.price = price;
         this.lastUpdateTime = lastUpdateTime;
+        this.direction = direction;
     }
 }
 

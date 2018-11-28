@@ -7,6 +7,7 @@ var Binance = require('node-binance-api')().options({
     useServerTime: true
 });
 var markets = [];
+var tickerList = [];
 Binance.initMarkets = function () {
     markets = [];
     Binance.prevDay(false, function (error, prevDay) {
@@ -20,14 +21,11 @@ Binance.initMarkets = function () {
             markets.push(symbol);
         }
     });
-};
-var tickerList = [];
-Binance.onReceivedTicker = function (callback) {
     Binance.websockets.trades(markets, function (trades) {
         var eventType = trades.e, eventTime = trades.E, symbol = trades.s, price = trades.p, quantity = trades.q, maker = trades.m, tradeId = trades.a;
         var newTicker = new TickerModel_1.default('Binance', symbol, price, eventTime);
         updateTickerList(newTicker);
-        callback(tickerList);
+        Binance.tickerList = tickerList;
     });
 };
 var updateTickerList = function (newTick) {
@@ -42,7 +40,17 @@ var updateTickerList = function (newTick) {
     }
     tickerList.forEach(function (item) {
         if (item.symbol === newTick.symbol) {
+            if (newTick.price > item.price) {
+                item.direction = 'Up';
+            }
+            else if (newTick.price < item.price) {
+                item.direction = 'Down';
+            }
+            else {
+                item.direction = 'Same';
+            }
             item.price = newTick.price;
+            item.lastUpdateTime = newTick.lastUpdateTime;
             return item;
         }
     });
