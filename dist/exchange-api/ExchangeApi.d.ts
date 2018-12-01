@@ -1,10 +1,12 @@
 import TickerModel from "../models/TickerModel";
+import Bitfinex from "./Bitfinex";
 export default class ExchangeApi {
+    bitfinex: Bitfinex;
     exchangeTickers: ExchangeTicker[];
     constructor();
     initMarkets: () => void;
     listenExchanges: () => void;
-    getTickersByExchange: (exchange: string) => TickerModel[];
+    getTickers: () => TickerModel[];
 }
 declare class ExchangeTicker {
     exchange: string;

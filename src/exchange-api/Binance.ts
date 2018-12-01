@@ -33,31 +33,31 @@ Binance.initMarkets = () => {
     });
 }
 
-const updateTickerList = (newTick : TickerModel) =>{
+const updateTickerList = (newTicker : TickerModel) =>{
     if(tickerList.length === 0){
-        tickerList.push(newTick);
+        tickerList.push(newTicker);
         return;
     }
 
-    let existingTicker = tickerList.filter((item) => item.symbol === newTick.symbol);
+    let existingTicker = tickerList.filter((item) => item.symbol === newTicker.symbol);
     if( existingTicker.length === 0){
-        tickerList.push(newTick);
+        tickerList.push(newTicker);
         return;
     }
 
     tickerList.forEach((item) => {
-        if(item.symbol === newTick.symbol){
-            if(newTick.price > item.price){
+        if(item.symbol === newTicker.symbol){
+            if(newTicker.price > item.price){
                 item.direction = 'Up';
             }
-            else if(newTick.price < item.price){
+            else if(newTicker.price < item.price){
                 item.direction = 'Down';
             }
             else{
                 item.direction = 'Same';
             }
-            item.price = newTick.price;
-            item.lastUpdateTime = newTick.lastUpdateTime;
+            item.price = newTicker.price;
+            item.lastUpdateTime = newTicker.lastUpdateTime;
             return item;
         }
     });

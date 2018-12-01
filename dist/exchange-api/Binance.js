@@ -28,29 +28,29 @@ Binance.initMarkets = function () {
         Binance.tickerList = tickerList;
     });
 };
-var updateTickerList = function (newTick) {
+var updateTickerList = function (newTicker) {
     if (tickerList.length === 0) {
-        tickerList.push(newTick);
+        tickerList.push(newTicker);
         return;
     }
-    var existingTicker = tickerList.filter(function (item) { return item.symbol === newTick.symbol; });
+    var existingTicker = tickerList.filter(function (item) { return item.symbol === newTicker.symbol; });
     if (existingTicker.length === 0) {
-        tickerList.push(newTick);
+        tickerList.push(newTicker);
         return;
     }
     tickerList.forEach(function (item) {
-        if (item.symbol === newTick.symbol) {
-            if (newTick.price > item.price) {
+        if (item.symbol === newTicker.symbol) {
+            if (newTicker.price > item.price) {
                 item.direction = 'Up';
             }
-            else if (newTick.price < item.price) {
+            else if (newTicker.price < item.price) {
                 item.direction = 'Down';
             }
             else {
                 item.direction = 'Same';
             }
-            item.price = newTick.price;
-            item.lastUpdateTime = newTick.lastUpdateTime;
+            item.price = newTicker.price;
+            item.lastUpdateTime = newTicker.lastUpdateTime;
             return item;
         }
     });

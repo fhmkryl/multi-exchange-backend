@@ -34,7 +34,6 @@ server.on('listening', onListening);
 
 // Loading socket.io
 var io = require('socket.io').listen(server);
-
 let exchangeApi = new ExchangeApi();
 
 // When a client connects, we note it in the console
@@ -51,7 +50,7 @@ io
     }, 2000);
 
     setInterval(function () {
-      let tickers = exchangeApi.getTickersByExchange('Binance');
+      let tickers = exchangeApi.getTickers();
       socket.emit('onTickersReceived', {tickerList: tickers});
     }, 1000);
 
@@ -59,21 +58,6 @@ io
       console.log('user disconnected');
     })
   });
-
-  function priceChanged(tickers: TickerModel[], newTicker: any){
-    let existingTicker = tickers.filter((item: any) => item.symbol === newTicker.symbol)[0];
-    if(existingTicker){
-      if(existingTicker.price !== newTicker.price){
-        console.log(existingTicker.symbol ,existingTicker.price, newTicker.price);
-        existingTicker.price = newTicker.price;
-        return true;
-      }
-      return false;
-    }
-
-    tickers.push(newTicker);
-    return true;
-  }
 
   function simulateExchanges(exchanges: any) : any{
     let updatedExchanges : any = [];

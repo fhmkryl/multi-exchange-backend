@@ -1,7 +1,10 @@
 import TickerModel from "../models/TickerModel";
 import Binance from "./Binance";
+import Bitfinex from "./Bitfinex";
 
 export default class ExchangeApi {
+    bitfinex : Bitfinex;
+
     exchangeTickers: ExchangeTicker[];
     constructor() {
         this.exchangeTickers = [];
@@ -12,7 +15,12 @@ export default class ExchangeApi {
 
     initMarkets = () => {
         this.exchangeTickers.push(new ExchangeTicker('Binance', []));
+        this.exchangeTickers.push(new ExchangeTicker('Bitfinex', []));
+        
         Binance.initMarkets();
+        
+        this.bitfinex = new Bitfinex();
+        this.bitfinex.start();
     }
 
     listenExchanges = (): void => {
@@ -22,14 +30,25 @@ export default class ExchangeApi {
                 if(item.exchange === 'Binance'){
                     item.tickers = Binance.tickerList;
                 }
+                if(item.exchange === 'Bitfinex'){
+                    item.tickers = self.bitfinex.tickerList;
+                }
             });
         }, 1000);
     }
 
-    getTickersByExchange = (exchange: string): TickerModel[] => {
-        let exchangeTicker =  this.exchangeTickers.filter((item : ExchangeTicker) => item.exchange === exchange);
+    getTickers = (): TickerModel[] => {
+        let self = this;
+        let result : TickerModel[] = [];
+        self.exchangeTickers.forEach((exchangeTicker: ExchangeTicker) => {
+            if(exchangeTicker.tickers && exchangeTicker.tickers.length > 0){
+                exchangeTicker.tickers.forEach((ticker: TickerModel) => {
+                    result.push(ticker);
+                });
+            }
+        });
     
-        return exchangeTicker[0].tickers;
+        return result;
     }
 }
 
