@@ -4,6 +4,7 @@ import App from "./App";
 import { ExchangeManager } from "./managers/ExchangeManager";
 import Binance from "./exchange-api/Binance";
 import TickerModel from "./models/TickerModel";
+import ExchangeApi from "./exchange-api/ExchangeApi";
 
 /**
  * Module dependencies.
@@ -34,7 +35,7 @@ server.on('listening', onListening);
 // Loading socket.io
 var io = require('socket.io').listen(server);
 
-Binance.initMarkets();
+let exchangeApi = new ExchangeApi();
 
 // When a client connects, we note it in the console
 io
@@ -50,7 +51,8 @@ io
     }, 2000);
 
     setInterval(function () {
-      socket.emit('onTickersReceived', {tickerList: Binance.tickerList});
+      let tickers = exchangeApi.getTickersByExchange('Binance');
+      socket.emit('onTickersReceived', {tickerList: tickers});
     }, 1000);
 
     socket.on('disconnect', () => {

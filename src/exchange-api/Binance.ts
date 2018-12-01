@@ -63,7 +63,4 @@ const updateTickerList = (newTick : TickerModel) =>{
     });
 }
 
-
-
-
 export default Binance;
