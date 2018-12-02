@@ -70,6 +70,7 @@ var Binance = /** @class */ (function (_super) {
                                 return response.json();
                             })
                                 .then(function (result) {
+                                var index = 0;
                                 result.forEach(function (item) {
                                     self.symbols.push(item.symbol);
                                 });
@@ -83,7 +84,7 @@ var Binance = /** @class */ (function (_super) {
     };
     Binance.prototype.subscribe = function () {
         var self = this;
-        self.ws = self.createWebSocket();
+        self.ws = new WebSocket('wss://stream.binance.com:9443/ws/!ticker@arr');
         self.ws.onopen = function () {
         };
     };
@@ -91,9 +92,11 @@ var Binance = /** @class */ (function (_super) {
         var self = this;
         self.ws.onmessage = function (msg) {
             var data = JSON.parse(msg.data);
-            var ticker = new TickerModel_1.default('Binance', data.s, data.p, new Date());
-            self.updateTickerList(ticker);
-            onTickerReceived(ticker);
+            data.forEach(function (item) {
+                var ticker = new TickerModel_1.default('Binance', item.s, item.p, new Date());
+                self.updateTickerList(ticker);
+                onTickerReceived(ticker);
+            });
         };
     };
     Binance.prototype.createWebSocket = function () {

@@ -21,6 +21,7 @@ export default class Binance extends ExchangeBase {
             return response.json();
         })
         .then((result: any) => {
+            let index = 0;
             result.forEach((item:any) => {
                 self.symbols.push(item.symbol);
             });
@@ -29,7 +30,7 @@ export default class Binance extends ExchangeBase {
 
     public subscribe() {
         let self = this;
-        self.ws = self.createWebSocket();
+        self.ws = new WebSocket('wss://stream.binance.com:9443/ws/!ticker@arr');
         self.ws.onopen = function () {
             
         };
@@ -39,11 +40,13 @@ export default class Binance extends ExchangeBase {
         let self = this;
         self.ws.onmessage = function (msg: any) {
             let data = JSON.parse(msg.data);
-            let ticker = new TickerModel('Binance', data.s, data.p, new Date());
+            data.forEach((item :any) => {
+                let ticker = new TickerModel('Binance', item.s, item.p, new Date());
 
-            self.updateTickerList(ticker);
+                self.updateTickerList(ticker);
 
-            onTickerReceived(ticker);
+                onTickerReceived(ticker); 
+            });
         };
     }
 
