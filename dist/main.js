@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var App_1 = require("./App");
 var ExchangeManager_1 = require("./managers/ExchangeManager");
-var ExchangeApi_1 = require("./exchange-api/ExchangeApi");
+var ExchangeApiManager_1 = require("./exchange-api/ExchangeApiManager");
 /**
  * Module dependencies.
  */
@@ -25,7 +25,6 @@ server.on('error', onError);
 server.on('listening', onListening);
 // Loading socket.io
 var io = require('socket.io').listen(server);
-var exchangeApi = new ExchangeApi_1.default();
 // When a client connects, we note it in the console
 io
     .sockets
@@ -37,10 +36,15 @@ io
             socket.emit('onExchangesReceived', { exchangeList: simulateExchanges(exchanges) });
         });
     }, 2000);
-    setInterval(function () {
-        var tickers = exchangeApi.getTickers();
-        socket.emit('onTickersReceived', { tickerList: tickers });
-    }, 1000);
+    var exchangeDbmanager = new ExchangeManager_1.ExchangeManager();
+    console.log(exchangeDbmanager.getAll(function () { }));
+    exchangeDbmanager.getAll(function (exchanges) {
+        var exchangeApiManager = new ExchangeApiManager_1.default(exchanges);
+        setInterval(function () {
+            var tickers = exchangeApiManager.getTickers('Bitfinex');
+            socket.emit('onTickersReceived', { tickerList: tickers });
+        }, 1000);
+    });
     socket.on('disconnect', function () {
         console.log('user disconnected');
     });

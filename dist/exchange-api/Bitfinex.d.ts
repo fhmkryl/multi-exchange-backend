@@ -1,9 +1,9 @@
-import TickerModel from "../models/TickerModel";
-export default class Bitfinex {
+import ExchangeBase from "./ExchangeBase";
+export default class Bitfinex extends ExchangeBase {
     ws: any;
     channelSymbolMap: any;
-    tickerList: TickerModel[];
     constructor();
-    start: () => void;
-    updateTickerList: (newTicker: TickerModel) => void;
+    populateSymbols(): Promise<void>;
+    subscribe(): void;
+    listen(onTickerReceived: any): void;
 }
