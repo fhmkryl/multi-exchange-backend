@@ -4,14 +4,8 @@ var ExchangeModel_1 = require("../models/ExchangeModel");
 var ExchangeManager = /** @class */ (function () {
     function ExchangeManager() {
     }
-    ExchangeManager.prototype.getAll = function (callback) {
-        ExchangeModel_1.default
-            .find({})
-            .exec(function (err, exchanges) {
-            if (err)
-                throw err;
-            callback(exchanges);
-        });
+    ExchangeManager.prototype.getAll = function () {
+        return ExchangeModel_1.default.find({}).lean(true).exec();
     };
     ExchangeManager.prototype.create = function (exchange, callback) {
         var newExchange = new ExchangeModel_1.default();

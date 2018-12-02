@@ -5,6 +5,7 @@ import { ExchangeManager } from "./managers/ExchangeManager";
 import Binance from "./exchange-api/Binance";
 import TickerModel from "./models/TickerModel";
 import ExchangeApiManager from "./exchange-api/ExchangeApiManager";
+import BootstrapApp from "./managers/BootstrapApp";
 
 /**
  * Module dependencies.
@@ -32,50 +33,8 @@ server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
 
-// Loading socket.io
-var io = require('socket.io').listen(server);
-
-// When a client connects, we note it in the console
-io
-  .sockets
-  .on('connection', function (socket : any) {
-    console.log('A client is connected!');
-
-    setInterval(function () {
-      let manager = new ExchangeManager();
-      manager.getAll((exchanges : any) => {
-        socket.emit('onExchangesReceived', {exchangeList: simulateExchanges(exchanges)});
-      });
-    }, 2000);
-
-    let exchangeDbmanager = new ExchangeManager(); 
-    console.log(exchangeDbmanager.getAll(() => {}));
-    exchangeDbmanager.getAll((exchanges:any) => {
-      let exchangeApiManager = new ExchangeApiManager(exchanges);
-      setInterval(function () {
-          let tickers = exchangeApiManager.getTickers('Bitfinex');
-           socket.emit('onTickersReceived', {tickerList: tickers});
-        }, 1000);
-    });
-
-    socket.on('disconnect', () => {
-      console.log('user disconnected');
-    })
-  });
-
-  function simulateExchanges(exchanges: any) : any{
-    let updatedExchanges : any = [];
-    exchanges.map((exchange: any, index: any, arr: any) => {
-      if(exchange.status === 'Running'){
-        exchange.serverTime = new Date();
-      }
-
-      updatedExchanges.push(exchange);
-    });
-
-    return updatedExchanges;
-  }
-
+let bootstrapper = new BootstrapApp(server);
+bootstrapper.start();
 
 /**
  * Normalize a port into a number, string, or false.

@@ -2,8 +2,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var App_1 = require("./App");
-var ExchangeManager_1 = require("./managers/ExchangeManager");
-var ExchangeApiManager_1 = require("./exchange-api/ExchangeApiManager");
+var BootstrapApp_1 = require("./managers/BootstrapApp");
 /**
  * Module dependencies.
  */
@@ -23,42 +22,8 @@ var server = http.createServer(App_1.default);
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
-// Loading socket.io
-var io = require('socket.io').listen(server);
-// When a client connects, we note it in the console
-io
-    .sockets
-    .on('connection', function (socket) {
-    console.log('A client is connected!');
-    setInterval(function () {
-        var manager = new ExchangeManager_1.ExchangeManager();
-        manager.getAll(function (exchanges) {
-            socket.emit('onExchangesReceived', { exchangeList: simulateExchanges(exchanges) });
-        });
-    }, 2000);
-    var exchangeDbmanager = new ExchangeManager_1.ExchangeManager();
-    console.log(exchangeDbmanager.getAll(function () { }));
-    exchangeDbmanager.getAll(function (exchanges) {
-        var exchangeApiManager = new ExchangeApiManager_1.default(exchanges);
-        setInterval(function () {
-            var tickers = exchangeApiManager.getTickers('Bitfinex');
-            socket.emit('onTickersReceived', { tickerList: tickers });
-        }, 1000);
-    });
-    socket.on('disconnect', function () {
-        console.log('user disconnected');
-    });
-});
-function simulateExchanges(exchanges) {
-    var updatedExchanges = [];
-    exchanges.map(function (exchange, index, arr) {
-        if (exchange.status === 'Running') {
-            exchange.serverTime = new Date();
-        }
-        updatedExchanges.push(exchange);
-    });
-    return updatedExchanges;
-}
+var bootstrapper = new BootstrapApp_1.default(server);
+bootstrapper.start();
 /**
  * Normalize a port into a number, string, or false.
  */
