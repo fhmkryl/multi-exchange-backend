@@ -76,7 +76,7 @@ var Poloniex = /** @class */ (function (_super) {
             self.webSocket.send(JSON.stringify(query));
         };
     };
-    Poloniex.prototype.listen = function (onTickerReceived) {
+    Poloniex.prototype.listen = function () {
         var self = this;
         self.webSocket.onmessage = function (msg) {
             try {
@@ -91,7 +91,6 @@ var Poloniex = /** @class */ (function (_super) {
                     var price = data[2][1];
                     var ticker = new TickerModel_1.default('Poloniex', symbol, price, new Date());
                     self.updateTickerList(ticker);
-                    onTickerReceived(ticker);
                 }
             }
             catch (_a) {

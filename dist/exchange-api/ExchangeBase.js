@@ -7,9 +7,6 @@ var ExchangeBase = /** @class */ (function () {
         this.createWebSocket = function (query) {
             _this.webSocket = new WebSocket(_this.wsBaseUrl + "/" + query);
         };
-        this.getSymbols = function () {
-            return _this.symbols;
-        };
         this.updateTickerList = function (newTicker) {
             var tickerList = _this.tickerList;
             if (tickerList.length === 0) {

@@ -87,7 +87,7 @@ var Bitfinex = /** @class */ (function (_super) {
             });
         };
     };
-    Bitfinex.prototype.listen = function (onTickerReceived) {
+    Bitfinex.prototype.listen = function () {
         var self = this;
         self.webSocket.onmessage = function (msg) {
             var response = JSON.parse(msg.data);
@@ -103,7 +103,6 @@ var Bitfinex = /** @class */ (function (_super) {
                 var price = response[7];
                 var ticker = new TickerModel_1.default('Bitfinex', symbol, price, new Date());
                 self.updateTickerList(ticker);
-                onTickerReceived(ticker);
             }
         };
     };

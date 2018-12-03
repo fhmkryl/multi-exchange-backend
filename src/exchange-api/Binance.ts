@@ -24,11 +24,11 @@ export default class Binance extends ExchangeBase {
         let self = this;
         self.createWebSocket('!ticker@arr');
         self.webSocket.onopen = function () {
-            
+            console.log('Web socket opened');
         };
     }
 
-    public listen(onTickerReceived: any) {
+    public listen() {
         let self = this;
         self.webSocket.onmessage = function (msg: any) {
             let data = JSON.parse(msg.data);
@@ -36,8 +36,6 @@ export default class Binance extends ExchangeBase {
                 let ticker = new TickerModel('Binance', item.s, item.p, new Date());
 
                 self.updateTickerList(ticker);
-
-                onTickerReceived(ticker); 
             });
         };
     }

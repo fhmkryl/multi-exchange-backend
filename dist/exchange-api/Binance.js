@@ -80,16 +80,16 @@ var Binance = /** @class */ (function (_super) {
         var self = this;
         self.createWebSocket('!ticker@arr');
         self.webSocket.onopen = function () {
+            console.log('Web socket opened');
         };
     };
-    Binance.prototype.listen = function (onTickerReceived) {
+    Binance.prototype.listen = function () {
         var self = this;
         self.webSocket.onmessage = function (msg) {
             var data = JSON.parse(msg.data);
             data.forEach(function (item) {
                 var ticker = new TickerModel_1.default('Binance', item.s, item.p, new Date());
                 self.updateTickerList(ticker);
-                onTickerReceived(ticker);
             });
         };
     };

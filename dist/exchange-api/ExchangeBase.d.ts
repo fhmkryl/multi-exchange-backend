@@ -9,8 +9,7 @@ declare abstract class ExchangeBase {
     abstract populateSymbols(): Promise<any>;
     createWebSocket: (query: string) => any;
     abstract subscribe(): void;
-    abstract listen(onTickerReceived: any): void;
-    getSymbols: () => string[];
+    abstract listen(): void;
     updateTickerList: (newTicker: TickerModel) => void;
 }
 export default ExchangeBase;

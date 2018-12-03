@@ -24,11 +24,7 @@ abstract class ExchangeBase {
 
     abstract subscribe () : void;
 
-    abstract listen (onTickerReceived: any) : void;
-
-    getSymbols = () : string[] => {
-        return this.symbols;
-    }
+    abstract listen () : void;
 
     updateTickerList = (newTicker : TickerModel) =>{
         let tickerList = this.tickerList;

@@ -18,17 +18,12 @@ var ExchangeApiManager = /** @class */ (function () {
             if (exchange.name === 'Poloniex') {
                 self.exchangeSockets[exchange.name] = new Poloniex_1.default(exchange.restApiBaseUrl, exchange.wsBaseUrl);
             }
-            var _loop_1 = function () {
-                var exchangeSocket = self.exchangeSockets[prop];
-                exchangeSocket.populateSymbols().then(function () {
-                    exchangeSocket.subscribe();
-                    exchangeSocket.listen(function (ticker) {
-                    });
+            var exchangeSocket = self.exchangeSockets[exchange.name];
+            exchangeSocket.populateSymbols().then(function () {
+                exchangeSocket.subscribe();
+                exchangeSocket.listen(function (ticker) {
                 });
-            };
-            for (var prop in self.exchangeSockets) {
-                _loop_1();
-            }
+            });
         };
         this.getTickers = function (exchangeName) {
             var exchangeSocket = _this.exchangeSockets[exchangeName];

@@ -30,7 +30,7 @@ export default class Poloniex extends ExchangeBase {
         };
     }
 
-    public listen(onTickerReceived: any) {
+    public listen() {
         let self = this;
         self.webSocket.onmessage = function (msg: any) {
             try {
@@ -46,8 +46,6 @@ export default class Poloniex extends ExchangeBase {
                     let ticker = new TickerModel('Poloniex', symbol, price, new Date());
     
                     self.updateTickerList(ticker);
-    
-                    onTickerReceived(ticker); 
                 }   
             } catch {
                 

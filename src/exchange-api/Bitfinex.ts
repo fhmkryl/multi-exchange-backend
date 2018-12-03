@@ -32,7 +32,7 @@ export default class Bitfinex extends ExchangeBase {
         };
     }
 
-    public listen(onTickerReceived: any) {
+    public listen() {
         let self = this;
         self.webSocket.onmessage = function (msg: any) {
             var response = JSON.parse(msg.data);
@@ -50,8 +50,6 @@ export default class Bitfinex extends ExchangeBase {
                 let ticker = new TickerModel('Bitfinex', symbol, price, new Date());
 
                 self.updateTickerList(ticker);
-
-                onTickerReceived(ticker);
             }
         };
     }
