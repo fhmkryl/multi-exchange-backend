@@ -98,7 +98,7 @@ var Bitfinex = /** @class */ (function (_super) {
             if (hb != "hb" && response.event !== 'subscribed' && self.channelSymbolMap[response[0]]) {
                 var symbol = self.channelSymbolMap[response[0]];
                 if (symbol.endsWith('USD')) {
-                    symbol = symbol + 'T';
+                    symbol = symbol + "T";
                 }
                 var price = response[7];
                 var ticker = new TickerModel_1.default('Bitfinex', symbol, price, new Date());

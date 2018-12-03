@@ -44,7 +44,7 @@ export default class Bitfinex extends ExchangeBase {
             if (hb != "hb" && response.event !== 'subscribed' && self.channelSymbolMap[response[0]]) {
                 let symbol = self.channelSymbolMap[response[0]];
                 if (symbol.endsWith('USD')) {
-                    symbol = symbol + 'T';
+                    symbol = `${symbol}T`;
                 }
                 let price = response[7];
                 let ticker = new TickerModel('Bitfinex', symbol, price, new Date());
