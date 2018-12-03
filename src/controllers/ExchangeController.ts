@@ -23,7 +23,9 @@ export class ExchangeController {
         let exchangeReq = {
             name: req.body.name,
             serverTime: new Date(),
-            status: 'Stopped'
+            status: 'Stopped',
+            restApiBaseUrl: req.body.restApiBaseUrl,
+            wsBaseUrl: req.body.wsBaseUrl
         };
         let exchange = new ExchangeModel(exchangeReq);
         exchange.save(function (err: any) {
@@ -45,7 +47,15 @@ export class ExchangeController {
 
     public updatePost(req: any, res: any): any {
         ExchangeModel.findOneAndUpdate({ _id: req.params.id },
-            { $set: { name: req.body.name, status: req.body.status } }, { new: true },
+            { $set: 
+                { 
+                    name: req.body.name, 
+                    status: req.body.status, 
+                    restApiBaseUrl: req.body.restApiBaseUrl, 
+                    wsBaseUrl : req.body.wsBaseUrl 
+                } 
+            }, 
+            { new: true },
             function (err: any, exchange: any) {
                 if (err) throw err;
 

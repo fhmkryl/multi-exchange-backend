@@ -21,7 +21,9 @@ var ExchangeController = /** @class */ (function () {
         var exchangeReq = {
             name: req.body.name,
             serverTime: new Date(),
-            status: 'Stopped'
+            status: 'Stopped',
+            restApiBaseUrl: req.body.restApiBaseUrl,
+            wsBaseUrl: req.body.wsBaseUrl
         };
         var exchange = new ExchangeModel_1.default(exchangeReq);
         exchange.save(function (err) {
@@ -40,7 +42,13 @@ var ExchangeController = /** @class */ (function () {
         });
     };
     ExchangeController.prototype.updatePost = function (req, res) {
-        ExchangeModel_1.default.findOneAndUpdate({ _id: req.params.id }, { $set: { name: req.body.name, status: req.body.status } }, { new: true }, function (err, exchange) {
+        ExchangeModel_1.default.findOneAndUpdate({ _id: req.params.id }, { $set: {
+                name: req.body.name,
+                status: req.body.status,
+                restApiBaseUrl: req.body.restApiBaseUrl,
+                wsBaseUrl: req.body.wsBaseUrl
+            }
+        }, { new: true }, function (err, exchange) {
             if (err)
                 throw err;
             res.redirect("/exchange/list");

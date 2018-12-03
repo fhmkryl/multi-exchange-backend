@@ -53,50 +53,32 @@ var pairIds = { 7: "BTC_BCN", 14: "BTC_BTS", 15: "BTC_BURST", 20: "BTC_CLAM", 25
 var codeConversion = { BTC_ETH: "ETHBTC", USDT_BTC: "BTCUSD", USDT_LTC: "LTCUSD", USDT_ETH: "LTCETH", USDT_XRP: "XRPUSD", USDT_DASH: "DASHUSD", USDT_XMR: "XMRUSD", USDT_ZEC: "ZECUSD", USDT_NXT: "NXTUSD", BTC_LTC: "LTCBTC", BTC_DASH: "DASHBTC", BTC_POT: "POTBTC", BTC_XMR: "XMRBTC", BTC_DOGE: "DOGEBTC", BTC_ZEC: "ZECBTC", BTC_XLM: "XLMBTC", BTC_ETC: "ETCBTC", BTC_MAID: "MAIDBTC", BTC_XEM: "XEMBTC", BTC_BTS: "BTSBTC", BTC_BCH: "BCHBTC", USDT_BCH: "BCHUSD", BTC_XRP: "XRPBTC" };
 var Poloniex = /** @class */ (function (_super) {
     __extends(Poloniex, _super);
-    function Poloniex() {
-        var _this = _super.call(this) || this;
-        _this.ws = new WebSocket('wss://api.bitfinex.com/ws');
+    function Poloniex(restApiBaseUrl, wsBaseUrl) {
+        var _this = _super.call(this, restApiBaseUrl, wsBaseUrl) || this;
         _this.channelSymbolMap = {};
         return _this;
     }
     Poloniex.prototype.populateSymbols = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var self;
             return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        self = this;
-                        return [4 /*yield*/, fetch('https://api.binance.com/api/v3/ticker/price')
-                                .then(function (response) {
-                                return response.json();
-                            })
-                                .then(function (result) {
-                                var index = 0;
-                                result.forEach(function (item) {
-                                    self.symbols.push(item.symbol);
-                                });
-                            })];
-                    case 1:
-                        _a.sent();
-                        return [2 /*return*/];
-                }
+                return [2 /*return*/];
             });
         });
     };
     Poloniex.prototype.subscribe = function () {
         var self = this;
-        self.ws = new WebSocket('wss://api2.poloniex.com');
-        self.ws.onopen = function () {
+        self.createWebSocket('');
+        self.webSocket.onopen = function () {
             var query = {
                 "command": "subscribe",
                 "channel": 1002
             };
-            self.ws.send(JSON.stringify(query));
+            self.webSocket.send(JSON.stringify(query));
         };
     };
     Poloniex.prototype.listen = function (onTickerReceived) {
         var self = this;
-        self.ws.onmessage = function (msg) {
+        self.webSocket.onmessage = function (msg) {
             try {
                 var data = JSON.parse(msg.data);
                 var channelId = data[2][0];

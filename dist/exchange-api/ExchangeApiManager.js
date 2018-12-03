@@ -7,16 +7,16 @@ var ExchangeApiManager = /** @class */ (function () {
     function ExchangeApiManager() {
         var _this = this;
         this.exchangeSockets = {};
-        this.initMarkets = function (exchangeName) {
+        this.initMarkets = function (exchange) {
             var self = _this;
-            if (exchangeName === 'Binance') {
-                self.exchangeSockets[exchangeName] = new Binance_1.default();
+            if (exchange.name === 'Binance') {
+                self.exchangeSockets[exchange.name] = new Binance_1.default(exchange.restApiBaseUrl, exchange.wsBaseUrl);
             }
-            if (exchangeName === 'Bitfinex') {
-                self.exchangeSockets[exchangeName] = new Bitfinex_1.default();
+            if (exchange.name === 'Bitfinex') {
+                self.exchangeSockets[exchange.name] = new Bitfinex_1.default(exchange.restApiBaseUrl, exchange.wsBaseUrl);
             }
-            if (exchangeName === 'Poloniex') {
-                self.exchangeSockets[exchangeName] = new Poloniex_1.default();
+            if (exchange.name === 'Poloniex') {
+                self.exchangeSockets[exchange.name] = new Poloniex_1.default(exchange.restApiBaseUrl, exchange.wsBaseUrl);
             }
             var _loop_1 = function () {
                 var exchangeSocket = self.exchangeSockets[prop];

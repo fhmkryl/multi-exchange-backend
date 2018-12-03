@@ -1,8 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+var WebSocket = require('ws');
 var ExchangeBase = /** @class */ (function () {
-    function ExchangeBase() {
+    function ExchangeBase(restApiBaseUrl, wsBaseUrl) {
         var _this = this;
+        this.createWebSocket = function (query) {
+            _this.webSocket = new WebSocket(_this.wsBaseUrl + "/" + query);
+        };
         this.getSymbols = function () {
             return _this.symbols;
         };
@@ -34,6 +38,8 @@ var ExchangeBase = /** @class */ (function () {
                 }
             });
         };
+        this.restApiBaseUrl = restApiBaseUrl;
+        this.wsBaseUrl = wsBaseUrl;
         this.symbols = [];
         this.tickerList = [];
     }

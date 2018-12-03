@@ -1,15 +1,26 @@
+const WebSocket = require('ws');
 import TickerModel from "../models/TickerModel";
 
 abstract class ExchangeBase {
+    public restApiBaseUrl: string;
+    public wsBaseUrl : string;
+    public webSocket : any;
+
     public symbols: string[];
     public tickerList: TickerModel [];
 
-    constructor(){
+    constructor(restApiBaseUrl: string, wsBaseUrl: string){
+        this.restApiBaseUrl = restApiBaseUrl;
+        this.wsBaseUrl = wsBaseUrl;
         this.symbols = [];
         this.tickerList = [];
     }
 
     abstract async populateSymbols () : Promise<any>;
+
+    createWebSocket = (query : string) : any => {
+        this.webSocket = new WebSocket(`${this.wsBaseUrl}/${query}`);
+    }
 
     abstract subscribe () : void;
 

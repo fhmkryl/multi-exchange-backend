@@ -8,43 +8,31 @@ var pairIds: any = {7:"BTC_BCN",14:"BTC_BTS",15:"BTC_BURST",20:"BTC_CLAM",25:"BT
 var codeConversion: any = {BTC_ETH:"ETHBTC",USDT_BTC:"BTCUSD",USDT_LTC:"LTCUSD",USDT_ETH:"LTCETH",USDT_XRP:"XRPUSD",USDT_DASH:"DASHUSD",USDT_XMR:"XMRUSD",USDT_ZEC:"ZECUSD",USDT_NXT:"NXTUSD",BTC_LTC:"LTCBTC",BTC_DASH:"DASHBTC",BTC_POT:"POTBTC",BTC_XMR:"XMRBTC",BTC_DOGE:"DOGEBTC",BTC_ZEC:"ZECBTC",BTC_XLM:"XLMBTC",BTC_ETC:"ETCBTC",BTC_MAID:"MAIDBTC",BTC_XEM:"XEMBTC",BTC_BTS:"BTSBTC",BTC_BCH:"BCHBTC",USDT_BCH:"BCHUSD",BTC_XRP:"XRPBTC"};
 export default class Poloniex extends ExchangeBase {
 
-    ws = new WebSocket('wss://api.bitfinex.com/ws');
     channelSymbolMap: any = {};
-
-    constructor() {
-        super();
+    constructor(restApiBaseUrl: string, wsBaseUrl: string) {
+        super(restApiBaseUrl, wsBaseUrl);
     }
 
     public async populateSymbols(){
-        let self = this;
-        await fetch('https://api.binance.com/api/v3/ticker/price')
-        .then((response:any) => {
-            return response.json();
-        })
-        .then((result: any) => {
-            let index = 0;
-            result.forEach((item:any) => {
-                self.symbols.push(item.symbol);
-            });
-        });
     }
 
     public subscribe() {
         let self = this;
-        self.ws = new WebSocket('wss://api2.poloniex.com');
-        self.ws.onopen = function () {
+        
+        self.createWebSocket('');
+        self.webSocket.onopen = function () {
             var query = {
                 "command": "subscribe",
                 "channel": 1002
               };
               
-            self.ws.send(JSON.stringify(query));
+            self.webSocket.send(JSON.stringify(query));
         };
     }
 
     public listen(onTickerReceived: any) {
         let self = this;
-        self.ws.onmessage = function (msg: any) {
+        self.webSocket.onmessage = function (msg: any) {
             try {
                 let data = JSON.parse(msg.data);
                 let channelId = data[2][0];

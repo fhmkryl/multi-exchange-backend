@@ -1,8 +1,7 @@
 import ExchangeBase from "./ExchangeBase";
 export default class Poloniex extends ExchangeBase {
-    ws: any;
     channelSymbolMap: any;
-    constructor();
+    constructor(restApiBaseUrl: string, wsBaseUrl: string);
     populateSymbols(): Promise<void>;
     subscribe(): void;
     listen(onTickerReceived: any): void;

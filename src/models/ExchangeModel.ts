@@ -2,7 +2,9 @@ var mongoose = require('mongoose');
 var exchangeSchema = new mongoose.Schema({
   name: String,
   serverTime: Date,
-  status: String
+  status: String,
+  restApiBaseUrl: String,
+  wsBaseUrl: String
 });
 
 let ExchangeModel =  mongoose.model('exchange', exchangeSchema);

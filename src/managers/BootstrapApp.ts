@@ -11,7 +11,6 @@ export default class BootstrapApp {
         let self = this;
         let manager = new ExchangeManager();
         manager.getAll().then((exchanges: any) => {
-            let exchangeApiManager = new ExchangeApiManager();
             var io = require('socket.io').listen(self.server);
             io
                 .sockets
@@ -23,11 +22,21 @@ export default class BootstrapApp {
                     }, 2000);
 
                     socket.on('subscribe', (exchangeName: string) => {
-                        exchangeApiManager.initMarkets(exchangeName);
-                        setInterval(function () {
-                            let tickers = exchangeApiManager.getTickers(exchangeName);
-                            socket.emit('onTickersReceived', { tickerList: tickers });
-                        }, 1000);
+                        let exchangeManager = new ExchangeManager();
+                        exchangeManager.getAll().then((exchanges:any) => {
+                            exchanges.forEach((exchangeItem:any) => {
+                                if(exchangeItem.name === exchangeName){
+                                    let exchangeApiManager = new ExchangeApiManager();
+                                    exchangeApiManager.initMarkets(exchangeItem);
+                                    setInterval(function () {
+                                        let tickers = exchangeApiManager.getTickers(exchangeName);
+                                        socket.emit('onTickersReceived', { tickerList: tickers });
+                                    }, 1000);
+
+                                    return;
+                                } 
+                            });
+                        });
                     });
 
                     socket.on('disconnect', () => {

@@ -9,18 +9,18 @@ export default class ExchangeApiManager {
     constructor() {
     }
 
-    initMarkets = (exchangeName: string) => {
+    initMarkets = (exchange: any) => {
         let self = this;
-        if(exchangeName === 'Binance') {
-            self.exchangeSockets[exchangeName] = new Binance();
+        if(exchange.name === 'Binance') {
+            self.exchangeSockets[exchange.name] = new Binance(exchange.restApiBaseUrl, exchange.wsBaseUrl);
         }
-        if(exchangeName === 'Bitfinex')
+        if(exchange.name === 'Bitfinex')
         {
-            self.exchangeSockets[exchangeName] = new Bitfinex();
+            self.exchangeSockets[exchange.name] = new Bitfinex(exchange.restApiBaseUrl, exchange.wsBaseUrl)
         }
-        if(exchangeName === 'Poloniex')
+        if(exchange.name === 'Poloniex')
         {
-            self.exchangeSockets[exchangeName] = new Poloniex();
+            self.exchangeSockets[exchange.name] = new Poloniex(exchange.restApiBaseUrl, exchange.wsBaseUrl)
         }
 
         for (var prop in self.exchangeSockets) {
