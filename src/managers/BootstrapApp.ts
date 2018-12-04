@@ -5,6 +5,8 @@ export default class BootstrapApp {
     server: any;
     constructor(server: any) {
         this.server = server;
+
+        process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
     }
 
     start = (): void => {

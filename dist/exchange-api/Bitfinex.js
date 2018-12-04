@@ -62,7 +62,7 @@ var Bitfinex = /** @class */ (function (_super) {
                 switch (_a.label) {
                     case 0:
                         self = this;
-                        return [4 /*yield*/, fetch(this.restApiBaseUrl + "/symbols")
+                        return [4 /*yield*/, self.createFetchRequest(this.restApiBaseUrl + "/symbols")
                                 .then(function (response) {
                                 return response.json();
                             })
@@ -98,13 +98,29 @@ var Bitfinex = /** @class */ (function (_super) {
             if (hb != "hb" && response.event !== 'subscribed' && self.channelSymbolMap[response[0]]) {
                 var symbol = self.channelSymbolMap[response[0]];
                 if (symbol.endsWith('USD')) {
-                    symbol = symbol + "T";
+                    symbol = symbol + 'T';
                 }
                 var price = response[7];
-                var ticker = new TickerModel_1.default('Bitfinex', symbol, price, new Date());
+                var ticker = self.extractTickerFromResponse(response);
+                //let ticker = new TickerModel('Bitfinex', symbol, price, new Date());
                 self.updateTickerList(ticker);
             }
         };
+    };
+    Bitfinex.prototype.extractTickerFromResponse = function (response) {
+        var exchangeName = 'Bitfinex';
+        var symbol = response.s;
+        var price = response.w;
+        var priceChange = response.p;
+        var priceChangePercent = response.P;
+        var openPrice = response.o;
+        var highPrice = response.h;
+        var lowPrice = response.l;
+        var closePrice = response.c;
+        var lastUpdateTime = new Date();
+        var direction = 'Same';
+        var ticker = new TickerModel_1.default(exchangeName, symbol, price, priceChange, priceChangePercent, openPrice, highPrice, lowPrice, closePrice, lastUpdateTime, direction);
+        return ticker;
     };
     return Bitfinex;
 }(ExchangeBase_1.default));

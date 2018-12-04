@@ -78,24 +78,44 @@ var Poloniex = /** @class */ (function (_super) {
     };
     Poloniex.prototype.listen = function () {
         var self = this;
-        self.webSocket.onmessage = function (msg) {
+        self.webSocket.onmessage = function (response) {
             try {
-                var data = JSON.parse(msg.data);
-                var channelId = data[2][0];
-                var tmpSymbol = pairIds[channelId];
-                var symbol = codeConversion[tmpSymbol];
-                if (symbol) {
-                    if (symbol.endsWith('USD')) {
-                        symbol = symbol + "T";
-                    }
-                    var price = data[2][1];
-                    var ticker = new TickerModel_1.default('Poloniex', symbol, price, new Date());
+                var data = JSON.parse(response.data);
+                var tickerData = data[2];
+                var ticker = self.extractTickerFromResponse(tickerData);
+                if (ticker.symbol) {
                     self.updateTickerList(ticker);
                 }
             }
-            catch (_a) {
+            catch (err) {
+                console.log(err);
             }
         };
+    };
+    Poloniex.prototype.extractTickerFromResponse = function (response) {
+        var exchangeName = 'Poloniex';
+        var symbol;
+        var price;
+        var priceChange;
+        var priceChangePercent;
+        var openPrice;
+        var highPrice;
+        var lowPrice;
+        var closePrice;
+        var lastUpdateTime = new Date();
+        var direction = 'Same';
+        var channelId = response[0];
+        var tmpSymbol = pairIds[channelId];
+        symbol = codeConversion[tmpSymbol];
+        if (symbol.endsWith('USD')) {
+            symbol = symbol + "T";
+        }
+        price = response[1];
+        priceChangePercent = response[4];
+        highPrice = response[8];
+        lowPrice = response[9];
+        var ticker = new TickerModel_1.default(exchangeName, symbol, price, priceChange, priceChangePercent, openPrice, highPrice, lowPrice, closePrice, lastUpdateTime, direction);
+        return ticker;
     };
     return Poloniex;
 }(ExchangeBase_1.default));

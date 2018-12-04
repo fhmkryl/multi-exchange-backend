@@ -50,6 +50,7 @@ var BootstrapApp = /** @class */ (function () {
             return updatedExchanges;
         };
         this.server = server;
+        process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
     }
     return BootstrapApp;
 }());

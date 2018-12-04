@@ -60,7 +60,7 @@ var Binance = /** @class */ (function (_super) {
                 switch (_a.label) {
                     case 0:
                         self = this;
-                        return [4 /*yield*/, fetch(self.restApiBaseUrl + "/ticker/price")
+                        return [4 /*yield*/, self.createFetchRequest(self.restApiBaseUrl + "/ticker/price")
                                 .then(function (response) {
                                 return response.json();
                             })
@@ -88,10 +88,25 @@ var Binance = /** @class */ (function (_super) {
         self.webSocket.onmessage = function (msg) {
             var data = JSON.parse(msg.data);
             data.forEach(function (item) {
-                var ticker = new TickerModel_1.default('Binance', item.s, item.p, new Date());
+                var ticker = self.extractTickerFromResponse(item);
                 self.updateTickerList(ticker);
             });
         };
+    };
+    Binance.prototype.extractTickerFromResponse = function (response) {
+        var exchangeName = 'Binance';
+        var symbol = response.s;
+        var price = response.w;
+        var priceChange = response.p;
+        var priceChangePercent = response.P;
+        var openPrice = response.o;
+        var highPrice = response.h;
+        var lowPrice = response.l;
+        var closePrice = response.c;
+        var lastUpdateTime = new Date();
+        var direction = 'Same';
+        var ticker = new TickerModel_1.default(exchangeName, symbol, price, priceChange, priceChangePercent, openPrice, highPrice, lowPrice, closePrice, lastUpdateTime, direction);
+        return ticker;
     };
     return Binance;
 }(ExchangeBase_1.default));

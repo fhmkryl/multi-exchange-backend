@@ -1,3 +1,4 @@
+import TickerModel from "../models/TickerModel";
 import ExchangeBase from "./ExchangeBase";
 export default class Poloniex extends ExchangeBase {
     channelSymbolMap: any;
@@ -5,4 +6,5 @@ export default class Poloniex extends ExchangeBase {
     populateSymbols(): Promise<void>;
     subscribe(): void;
     listen(): void;
+    extractTickerFromResponse(response: any): TickerModel;
 }
