@@ -62,13 +62,13 @@ var Bitfinex = /** @class */ (function (_super) {
                 switch (_a.label) {
                     case 0:
                         self = this;
-                        return [4 /*yield*/, self.createFetchRequest(this.restApiBaseUrl + "/symbols")
+                        return [4 /*yield*/, self.createFetchRequest(this.restApiBaseUrl + "/tickers?symbols=ALL")
                                 .then(function (response) {
                                 return response.json();
                             })
                                 .then(function (result) {
-                                result.forEach(function (symbol) {
-                                    self.symbols.push(symbol);
+                                result.forEach(function (item) {
+                                    self.symbols.push(item[0]);
                                 });
                             })];
                     case 1:
@@ -96,30 +96,28 @@ var Bitfinex = /** @class */ (function (_super) {
             }
             var hb = response[1];
             if (hb != "hb" && response.event !== 'subscribed' && self.channelSymbolMap[response[0]]) {
-                var symbol = self.channelSymbolMap[response[0]];
-                if (symbol.endsWith('USD')) {
-                    symbol = symbol + 'T';
-                }
-                var price = response[7];
                 var ticker = self.extractTickerFromResponse(response);
-                //let ticker = new TickerModel('Bitfinex', symbol, price, new Date());
                 self.updateTickerList(ticker);
             }
         };
     };
     Bitfinex.prototype.extractTickerFromResponse = function (response) {
         var exchangeName = 'Bitfinex';
-        var symbol = response.s;
-        var price = response.w;
-        var priceChange = response.p;
-        var priceChangePercent = response.P;
-        var openPrice = response.o;
-        var highPrice = response.h;
-        var lowPrice = response.l;
-        var closePrice = response.c;
+        var symbol = this.channelSymbolMap[response[0]];
+        if (symbol.endsWith('USD')) {
+            symbol = symbol + "T";
+        }
+        var price = response[9];
+        var priceChange = response[7];
+        var priceChangePercent = response[8];
+        var openPrice = 0;
+        var highPrice = response[11];
+        var lowPrice = response[12];
+        var closePrice = 0;
+        var volume = response[10];
         var lastUpdateTime = new Date();
         var direction = 'Same';
-        var ticker = new TickerModel_1.default(exchangeName, symbol, price, priceChange, priceChangePercent, openPrice, highPrice, lowPrice, closePrice, lastUpdateTime, direction);
+        var ticker = new TickerModel_1.default(exchangeName, symbol, price, priceChange, priceChangePercent, openPrice, highPrice, lowPrice, closePrice, volume, lastUpdateTime, direction);
         return ticker;
     };
     return Bitfinex;

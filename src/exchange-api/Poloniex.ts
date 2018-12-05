@@ -55,6 +55,7 @@ export default class Poloniex extends ExchangeBase {
         let highPrice: number ;
         let lowPrice: number ;
         let closePrice: number;
+        let volume : number;
         let lastUpdateTime: Date = new Date();
         let direction: string = 'Same';
 
@@ -68,6 +69,7 @@ export default class Poloniex extends ExchangeBase {
         priceChangePercent = response[4];
         highPrice = response[8];
         lowPrice = response[9];
+        volume = response [5];
 
         let ticker = new TickerModel(exchangeName,
             symbol,
@@ -78,6 +80,7 @@ export default class Poloniex extends ExchangeBase {
             highPrice,
             lowPrice,
             closePrice,
+            volume,
             lastUpdateTime,
             direction);
 

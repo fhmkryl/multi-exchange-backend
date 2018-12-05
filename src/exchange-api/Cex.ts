@@ -25,8 +25,7 @@ export default class Cex extends ExchangeBase {
                 "rooms": [
                     "tickers"
                 ]
-              };
-              
+            };
             self.webSocket.send(JSON.stringify(query));
         };
     }

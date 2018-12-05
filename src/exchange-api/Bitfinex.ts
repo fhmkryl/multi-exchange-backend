@@ -11,13 +11,13 @@ export default class Bitfinex extends ExchangeBase {
 
     public async populateSymbols(){
         let self = this;
-        await self.createFetchRequest(`${this.restApiBaseUrl}/symbols`)
+        await self.createFetchRequest(`${this.restApiBaseUrl}/tickers?symbols=ALL`)
         .then((response:any) => {
             return response.json();
         })
         .then((result: any) => {
-            result.forEach((symbol:string) => {
-                self.symbols.push(symbol);
+            result.forEach((item:any) => {
+                self.symbols.push(item[0]);
             });
         });
     }
@@ -42,14 +42,7 @@ export default class Bitfinex extends ExchangeBase {
 
             var hb = response[1];
             if (hb != "hb" && response.event !== 'subscribed' && self.channelSymbolMap[response[0]]) {
-                let symbol = self.channelSymbolMap[response[0]];
-                if (symbol.endsWith('USD')) {
-                    symbol = symbol + 'T';
-                }
-                let price = response[7];
-
                 let ticker = self.extractTickerFromResponse(response);
-                //let ticker = new TickerModel('Bitfinex', symbol, price, new Date());
 
                 self.updateTickerList(ticker);
             }
@@ -58,14 +51,18 @@ export default class Bitfinex extends ExchangeBase {
 
     public extractTickerFromResponse(response: any): TickerModel {
         let exchangeName: string = 'Bitfinex';
-        let symbol: string = response.s;
-        let price: number = response.w;
-        let priceChange: number = response.p;
-        let priceChangePercent: number = response.P;
-        let openPrice: number = response.o;
-        let highPrice: number = response.h;
-        let lowPrice: number = response.l;
-        let closePrice: number = response.c;
+        let symbol: string = this.channelSymbolMap[response[0]];
+        if(symbol.endsWith('USD')) {
+            symbol = `${symbol}T`;
+        }
+        let price: number = response[9];
+        let priceChange: number = response[7];
+        let priceChangePercent: number = response[8];
+        let openPrice: number = 0;
+        let highPrice: number = response[11];
+        let lowPrice: number = response[12];
+        let closePrice: number = 0;
+        let volume : number = response[10];
         let lastUpdateTime: Date = new Date();
         let direction: string = 'Same';
 
@@ -78,6 +75,7 @@ export default class Bitfinex extends ExchangeBase {
             highPrice,
             lowPrice,
             closePrice,
+            volume,
             lastUpdateTime,
             direction);
 

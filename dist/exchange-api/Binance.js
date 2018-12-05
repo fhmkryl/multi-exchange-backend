@@ -96,16 +96,17 @@ var Binance = /** @class */ (function (_super) {
     Binance.prototype.extractTickerFromResponse = function (response) {
         var exchangeName = 'Binance';
         var symbol = response.s;
-        var price = response.w;
+        var price = response.c;
         var priceChange = response.p;
         var priceChangePercent = response.P;
         var openPrice = response.o;
         var highPrice = response.h;
         var lowPrice = response.l;
         var closePrice = response.c;
+        var volume = response.v;
         var lastUpdateTime = new Date();
         var direction = 'Same';
-        var ticker = new TickerModel_1.default(exchangeName, symbol, price, priceChange, priceChangePercent, openPrice, highPrice, lowPrice, closePrice, lastUpdateTime, direction);
+        var ticker = new TickerModel_1.default(exchangeName, symbol, price, priceChange, priceChangePercent, openPrice, highPrice, lowPrice, closePrice, volume, lastUpdateTime, direction);
         return ticker;
     };
     return Binance;

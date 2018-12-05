@@ -29,14 +29,16 @@ ExchangeRoutes.post('/delete/:id', function (req, res) {
 });
 ExchangeRoutes.get('/start/:id', function (req, res) {
     manager.update({ _id: req.params.id, status: 'Running' }, function (result) {
-        var exchanges = manager.getAll();
-        res.render('../views/exchange/listTemplate', { exchanges: exchanges });
+        manager.getAll().then(function (exchanges) {
+            res.render('../views/exchange/listTemplate', { exchanges: exchanges });
+        });
     });
 });
 ExchangeRoutes.get('/stop/:id', function (req, res) {
     manager.update({ _id: req.params.id, status: 'Stopped' }, function (result) {
-        var exchanges = manager.getAll();
-        res.render('../views/exchange/listTemplate', { exchanges: exchanges });
+        manager.getAll().then(function (exchanges) {
+            res.render('../views/exchange/listTemplate', { exchanges: exchanges });
+        });
     });
 });
 exports.default = ExchangeRoutes;

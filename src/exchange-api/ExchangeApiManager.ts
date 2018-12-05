@@ -4,12 +4,13 @@ import Binance from "./Binance";
 import Poloniex from "./Poloniex";
 
 export default class ExchangeApiManager {
-    exchangeSockets: any = {};
+    exchangeSockets: any;
 
     constructor() {
+        this.exchangeSockets = {};
     }
 
-    initMarkets = (exchange: any) => {
+    start = (exchange: any) => {
         let self = this;
         if (exchange.name === 'Binance') {
             self.exchangeSockets[exchange.name] = new Binance(exchange.restApiBaseUrl, exchange.wsBaseUrl);
@@ -29,13 +30,32 @@ export default class ExchangeApiManager {
         });
     }
 
+    stop = (exchangeItem: any) => {
+        delete this.exchangeSockets[exchangeItem.name];
+    }
 
-    getTickers = (exchangeName: string): TickerModel[] => {
+
+    getTickersByExchange = (exchangeName: string): TickerModel[] => {
         let exchangeSocket = this.exchangeSockets[exchangeName];
         if (exchangeSocket) {
             return exchangeSocket.tickerList;
         }
 
         return [];
+    }
+
+    getTickersBySymbol = (symbol: string) : TickerModel[] => {
+        let self = this;
+
+        let tickerList: TickerModel[] = [];
+        for(let prop in self.exchangeSockets){
+            let socket = self.exchangeSockets[prop];
+            let tickers = socket.tickerList.filter((tickerItem: any) => tickerItem.symbol === symbol);
+            if(tickers && tickers.length > 0){
+                tickerList = [...tickerList, tickers[0]];
+            }
+        }
+
+        return tickerList;
     }
 }

@@ -9,6 +9,7 @@ class TickerModel {
     highPrice: number;
     lowPrice: number;
     closePrice: number;
+    volume: number;
     lastUpdateTime: Date;
     direction: string;
 
@@ -21,6 +22,7 @@ class TickerModel {
         highPrice: number,
         lowPrice: number,
         closePrice: number,
+        volume: number,
         lastUpdateTime: Date,
         direction: string = 'Same') {
         this.exchangeName = exchangeName;
@@ -32,6 +34,7 @@ class TickerModel {
         this.highPrice = highPrice;
         this.lowPrice = lowPrice;
         this.closePrice = closePrice;
+        this.volume = volume;
         this.lastUpdateTime = lastUpdateTime;
         this.direction = direction;
     }

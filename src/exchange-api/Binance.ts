@@ -43,13 +43,14 @@ export default class Binance extends ExchangeBase {
     public extractTickerFromResponse(response: any): TickerModel {
         let exchangeName: string = 'Binance';
         let symbol: string = response.s;
-        let price: number = response.w;
+        let price: number = response.c;
         let priceChange: number = response.p;
         let priceChangePercent: number = response.P;
         let openPrice: number = response.o;
         let highPrice: number = response.h;
         let lowPrice: number = response.l;
         let closePrice: number = response.c;
+        let volume : number = response.v;
         let lastUpdateTime: Date = new Date();
         let direction: string = 'Same';
 
@@ -62,6 +63,7 @@ export default class Binance extends ExchangeBase {
             highPrice,
             lowPrice,
             closePrice,
+            volume,
             lastUpdateTime,
             direction);
 

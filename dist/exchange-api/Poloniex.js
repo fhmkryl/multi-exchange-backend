@@ -102,6 +102,7 @@ var Poloniex = /** @class */ (function (_super) {
         var highPrice;
         var lowPrice;
         var closePrice;
+        var volume;
         var lastUpdateTime = new Date();
         var direction = 'Same';
         var channelId = response[0];
@@ -114,7 +115,8 @@ var Poloniex = /** @class */ (function (_super) {
         priceChangePercent = response[4];
         highPrice = response[8];
         lowPrice = response[9];
-        var ticker = new TickerModel_1.default(exchangeName, symbol, price, priceChange, priceChangePercent, openPrice, highPrice, lowPrice, closePrice, lastUpdateTime, direction);
+        volume = response[5];
+        var ticker = new TickerModel_1.default(exchangeName, symbol, price, priceChange, priceChangePercent, openPrice, highPrice, lowPrice, closePrice, volume, lastUpdateTime, direction);
         return ticker;
     };
     return Poloniex;
