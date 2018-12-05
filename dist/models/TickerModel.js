@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var TickerModel = /** @class */ (function () {
-    function TickerModel(exchangeName, symbol, price, priceChange, pricePercentChange, openPrice, highPrice, lowPrice, closePrice, volume, lastUpdateTime, direction) {
+    function TickerModel(exchangeName, symbol, price, priceInDollar, priceChange, pricePercentChange, openPrice, highPrice, lowPrice, closePrice, volume, lastUpdateTime, direction) {
         if (direction === void 0) { direction = 'Same'; }
         this.exchangeName = exchangeName;
         this.symbol = symbol;

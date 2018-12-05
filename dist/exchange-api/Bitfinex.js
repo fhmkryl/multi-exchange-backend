@@ -97,6 +97,12 @@ var Bitfinex = /** @class */ (function (_super) {
             var hb = response[1];
             if (hb != "hb" && response.event !== 'subscribed' && self.channelSymbolMap[response[0]]) {
                 var ticker = self.extractTickerFromResponse(response);
+                if (ticker.symbol.startsWith('BTC')) {
+                    self.btcUsd = ticker.price;
+                }
+                if (ticker.symbol.startsWith('ETH')) {
+                    self.ethUsd = ticker.price;
+                }
                 self.updateTickerList(ticker);
             }
         };
@@ -108,6 +114,7 @@ var Bitfinex = /** @class */ (function (_super) {
             symbol = symbol + "T";
         }
         var price = response[9];
+        var priceInDollar = 0;
         var priceChange = response[7];
         var priceChangePercent = response[8];
         var openPrice = 0;
@@ -117,7 +124,7 @@ var Bitfinex = /** @class */ (function (_super) {
         var volume = response[10];
         var lastUpdateTime = new Date();
         var direction = 'Same';
-        var ticker = new TickerModel_1.default(exchangeName, symbol, price, priceChange, priceChangePercent, openPrice, highPrice, lowPrice, closePrice, volume, lastUpdateTime, direction);
+        var ticker = new TickerModel_1.default(exchangeName, symbol, price, priceInDollar, priceChange, priceChangePercent, openPrice, highPrice, lowPrice, closePrice, volume, lastUpdateTime, direction);
         return ticker;
     };
     return Bitfinex;

@@ -43,6 +43,13 @@ export default class Bitfinex extends ExchangeBase {
             var hb = response[1];
             if (hb != "hb" && response.event !== 'subscribed' && self.channelSymbolMap[response[0]]) {
                 let ticker = self.extractTickerFromResponse(response);
+                
+                if(ticker.symbol.startsWith('BTC')){
+                    self.btcUsd = ticker.price;
+                }
+                if(ticker.symbol.startsWith('ETH')){
+                    self.ethUsd = ticker.price;
+                }
 
                 self.updateTickerList(ticker);
             }
@@ -56,6 +63,7 @@ export default class Bitfinex extends ExchangeBase {
             symbol = `${symbol}T`;
         }
         let price: number = response[9];
+        let priceInDollar: number = 0;
         let priceChange: number = response[7];
         let priceChangePercent: number = response[8];
         let openPrice: number = 0;
@@ -69,6 +77,7 @@ export default class Bitfinex extends ExchangeBase {
         let ticker = new TickerModel(exchangeName,
             symbol,
             price,
+            priceInDollar,
             priceChange,
             priceChangePercent,
             openPrice,

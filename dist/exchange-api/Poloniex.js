@@ -81,9 +81,14 @@ var Poloniex = /** @class */ (function (_super) {
         self.webSocket.onmessage = function (response) {
             try {
                 var data = JSON.parse(response.data);
-                var tickerData = data[2];
-                var ticker = self.extractTickerFromResponse(tickerData);
+                var ticker = self.extractTickerFromResponse(data[2]);
                 if (ticker.symbol) {
+                    if (ticker.symbol.startsWith('BTC')) {
+                        self.btcUsd = ticker.price;
+                    }
+                    if (ticker.symbol.startsWith('ETH')) {
+                        self.ethUsd = ticker.price;
+                    }
                     self.updateTickerList(ticker);
                 }
             }
@@ -96,6 +101,7 @@ var Poloniex = /** @class */ (function (_super) {
         var exchangeName = 'Poloniex';
         var symbol;
         var price;
+        var priceInDollar = 0;
         var priceChange;
         var priceChangePercent;
         var openPrice;
@@ -116,7 +122,7 @@ var Poloniex = /** @class */ (function (_super) {
         highPrice = response[8];
         lowPrice = response[9];
         volume = response[5];
-        var ticker = new TickerModel_1.default(exchangeName, symbol, price, priceChange, priceChangePercent, openPrice, highPrice, lowPrice, closePrice, volume, lastUpdateTime, direction);
+        var ticker = new TickerModel_1.default(exchangeName, symbol, price, priceInDollar, priceChange, priceChangePercent, openPrice, highPrice, lowPrice, closePrice, volume, lastUpdateTime, direction);
         return ticker;
     };
     return Poloniex;

@@ -34,12 +34,18 @@ export default class Poloniex extends ExchangeBase {
         self.webSocket.onmessage = function (response: any) {
             try {
                 let data = JSON.parse(response.data);
-                let tickerData = data[2];
-                let ticker = self.extractTickerFromResponse(tickerData);
-                if(ticker.symbol){
+                let ticker = self.extractTickerFromResponse(data[2]);
+                if (ticker.symbol) {
+                    if (ticker.symbol.startsWith('BTC')) {
+                        self.btcUsd = ticker.price;
+                    }
+                    if (ticker.symbol.startsWith('ETH')) {
+                        self.ethUsd = ticker.price;
+                    }
+
                     self.updateTickerList(ticker);
                 }
-            } catch(err) {
+            } catch (err) {
                 console.log(err);
             }
         };
@@ -48,32 +54,34 @@ export default class Poloniex extends ExchangeBase {
     public extractTickerFromResponse(response: any): TickerModel {
         let exchangeName: string = 'Poloniex';
         let symbol: string;
-        let price: number ;
-        let priceChange: number ;
-        let priceChangePercent: number ;
-        let openPrice: number ;
-        let highPrice: number ;
-        let lowPrice: number ;
+        let price: number;
+        let priceInDollar: number = 0;
+        let priceChange: number;
+        let priceChangePercent: number;
+        let openPrice: number;
+        let highPrice: number;
+        let lowPrice: number;
         let closePrice: number;
-        let volume : number;
+        let volume: number;
         let lastUpdateTime: Date = new Date();
         let direction: string = 'Same';
 
         let channelId = response[0];
         let tmpSymbol = pairIds[channelId];
         symbol = codeConversion[tmpSymbol];
-        if(symbol.endsWith('USD')) {
+        if (symbol.endsWith('USD')) {
             symbol = `${symbol}T`;
         }
         price = response[1];
         priceChangePercent = response[4];
         highPrice = response[8];
         lowPrice = response[9];
-        volume = response [5];
+        volume = response[5];
 
         let ticker = new TickerModel(exchangeName,
             symbol,
             price,
+            priceInDollar,
             priceChange,
             priceChangePercent,
             openPrice,

@@ -13,12 +13,16 @@ abstract class ExchangeBase {
 
     public symbols: string[];
     public tickerList: TickerModel [];
+    public btcUsd : number;
+    public ethUsd : number;
 
     constructor(restApiBaseUrl: string, wsBaseUrl: string){
         this.restApiBaseUrl = restApiBaseUrl;
         this.wsBaseUrl = wsBaseUrl;
         this.symbols = [];
         this.tickerList = [];
+        this.btcUsd = 0;
+        this.ethUsd = 0;
     }
 
     abstract async populateSymbols () : Promise<any>;
@@ -64,6 +68,16 @@ abstract class ExchangeBase {
     abstract extractTickerFromResponse(response: any): TickerModel;
 
     updateTickerList = (newTicker : TickerModel) =>{
+        if(newTicker.symbol.endsWith('BTC')){
+            newTicker.priceInDollar = newTicker.price * this.btcUsd;
+        }
+        if(newTicker.symbol.endsWith('ETH')){
+            newTicker.priceInDollar = newTicker.price * this.ethUsd;
+        }
+        if(newTicker.symbol.endsWith('USDT')){
+            newTicker.priceInDollar = newTicker.price;
+        }
+
         let tickerList = this.tickerList;
         if(tickerList.length === 0){
             tickerList.push(newTicker);
@@ -88,6 +102,7 @@ abstract class ExchangeBase {
                     item.direction = 'Same';
                 }
                 item.price = newTicker.price;
+                item.priceInDollar = newTicker.priceInDollar;
                 item.lastUpdateTime = newTicker.lastUpdateTime;
                 return item;
             }

@@ -89,6 +89,12 @@ var Binance = /** @class */ (function (_super) {
             var data = JSON.parse(msg.data);
             data.forEach(function (item) {
                 var ticker = self.extractTickerFromResponse(item);
+                if (ticker.symbol.startsWith('BTC')) {
+                    self.btcUsd = ticker.price;
+                }
+                if (ticker.symbol.startsWith('ETH')) {
+                    self.ethUsd = ticker.price;
+                }
                 self.updateTickerList(ticker);
             });
         };
@@ -97,16 +103,17 @@ var Binance = /** @class */ (function (_super) {
         var exchangeName = 'Binance';
         var symbol = response.s;
         var price = response.c;
+        var priceInDollar = 0;
         var priceChange = response.p;
         var priceChangePercent = response.P;
         var openPrice = response.o;
         var highPrice = response.h;
         var lowPrice = response.l;
         var closePrice = response.c;
-        var volume = response.v;
+        var volume = response.q;
         var lastUpdateTime = new Date();
         var direction = 'Same';
-        var ticker = new TickerModel_1.default(exchangeName, symbol, price, priceChange, priceChangePercent, openPrice, highPrice, lowPrice, closePrice, volume, lastUpdateTime, direction);
+        var ticker = new TickerModel_1.default(exchangeName, symbol, price, priceInDollar, priceChange, priceChangePercent, openPrice, highPrice, lowPrice, closePrice, volume, lastUpdateTime, direction);
         return ticker;
     };
     return Binance;

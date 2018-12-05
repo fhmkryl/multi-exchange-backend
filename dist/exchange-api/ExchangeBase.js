@@ -80,6 +80,15 @@ var ExchangeBase = /** @class */ (function () {
             return parsedProxyURL;
         };
         this.updateTickerList = function (newTicker) {
+            if (newTicker.symbol.endsWith('BTC')) {
+                newTicker.priceInDollar = newTicker.price * _this.btcUsd;
+            }
+            if (newTicker.symbol.endsWith('ETH')) {
+                newTicker.priceInDollar = newTicker.price * _this.ethUsd;
+            }
+            if (newTicker.symbol.endsWith('USDT')) {
+                newTicker.priceInDollar = newTicker.price;
+            }
             var tickerList = _this.tickerList;
             if (tickerList.length === 0) {
                 tickerList.push(newTicker);
@@ -102,6 +111,7 @@ var ExchangeBase = /** @class */ (function () {
                         item.direction = 'Same';
                     }
                     item.price = newTicker.price;
+                    item.priceInDollar = newTicker.priceInDollar;
                     item.lastUpdateTime = newTicker.lastUpdateTime;
                     return item;
                 }
@@ -111,6 +121,8 @@ var ExchangeBase = /** @class */ (function () {
         this.wsBaseUrl = wsBaseUrl;
         this.symbols = [];
         this.tickerList = [];
+        this.btcUsd = 0;
+        this.ethUsd = 0;
     }
     return ExchangeBase;
 }());

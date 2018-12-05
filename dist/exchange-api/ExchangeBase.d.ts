@@ -6,6 +6,8 @@ declare abstract class ExchangeBase {
     webSocket: any;
     symbols: string[];
     tickerList: TickerModel[];
+    btcUsd: number;
+    ethUsd: number;
     constructor(restApiBaseUrl: string, wsBaseUrl: string);
     abstract populateSymbols(): Promise<any>;
     createFetchRequest: (url: string) => Promise<any>;

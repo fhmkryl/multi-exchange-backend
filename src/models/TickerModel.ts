@@ -16,6 +16,7 @@ class TickerModel {
     constructor(exchangeName: string,
         symbol: string,
         price: number,
+        priceInDollar:number,
         priceChange: number,
         pricePercentChange: number,
         openPrice: number,

@@ -35,6 +35,12 @@ export default class Binance extends ExchangeBase {
             let data = JSON.parse(msg.data);
             data.forEach((item: any) => {
                 let ticker = self.extractTickerFromResponse(item);
+                if(ticker.symbol.startsWith('BTC')){
+                    self.btcUsd = ticker.price;
+                }
+                if(ticker.symbol.startsWith('ETH')){
+                    self.ethUsd = ticker.price;
+                }
                 self.updateTickerList(ticker);
             });
         };
@@ -44,19 +50,21 @@ export default class Binance extends ExchangeBase {
         let exchangeName: string = 'Binance';
         let symbol: string = response.s;
         let price: number = response.c;
+        let priceInDollar : number = 0;
         let priceChange: number = response.p;
         let priceChangePercent: number = response.P;
         let openPrice: number = response.o;
         let highPrice: number = response.h;
         let lowPrice: number = response.l;
         let closePrice: number = response.c;
-        let volume : number = response.v;
+        let volume : number = response.q;
         let lastUpdateTime: Date = new Date();
         let direction: string = 'Same';
 
         let ticker = new TickerModel(exchangeName,
             symbol,
             price,
+            priceInDollar,
             priceChange,
             priceChangePercent,
             openPrice,
